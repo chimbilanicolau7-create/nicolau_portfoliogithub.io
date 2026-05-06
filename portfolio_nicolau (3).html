@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicolau — Portfolio Électronique</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --accent: #00ffe0;
+    --accent2: #ff6b35;
+    --accent3: #7b61ff;
+    --text: #c9d1d9;
+    --text-dim: #6e7681;
+    --border: rgba(0,255,224,0.15);
+    --glow: 0 0 20px rgba(0,255,224,0.3);
+    --glow2: 0 0 20px rgba(255,107,53,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,224,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,224,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCANLINE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(8,12,16,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-shadow: var(--glow);
+  }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+  .nav-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s, text-shadow 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); text-shadow: var(--glow); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-circuit {
+    position: absolute;
+    inset: 0;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+  }
+
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 0 60px rgba(0,255,224,0.4), 0 0 120px rgba(0,255,224,0.1);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+
+  .hero-name span { color: var(--accent); }
+
+  .hero-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 550px;
+    margin: 0 auto 3rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 1s forwards;
+  }
+
+  .btn {
+    padding: 0.75rem 2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 30px var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .btn-outline:hover {
+    background: rgba(0,255,224,0.1);
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+  }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    opacity: 0.5;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.1em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.3;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 16px; height: 16px;
+    background: var(--accent);
+    opacity: 0.3;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+
+  .skill-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow), inset 0 0 30px rgba(0,255,224,0.03);
+  }
+
+  .skill-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .skill-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-cyan { border-color: var(--accent); color: var(--accent); background: rgba(0,255,224,0.05); }
+  .tag-orange { border-color: var(--accent2); color: var(--accent2); background: rgba(255,107,53,0.05); }
+  .tag-purple { border-color: var(--accent3); color: var(--accent3); background: rgba(123,97,255,0.05); }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .project-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .project-card:hover {
+    border-color: rgba(0,255,224,0.4);
+    box-shadow: var(--glow);
+    transform: translateY(-4px);
+  }
+
+  .project-card.featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .project-img {
+    background: var(--bg3);
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .project-card.featured .project-img { height: 100%; min-height: 280px; }
+
+  .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover .project-img img { transform: scale(1.03); }
+
+  .project-img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .project-img-placeholder svg { opacity: 0.3; }
+
+  .project-img-placeholder span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+  }
+
+  /* Clickable overlay */
+  .project-img-clickable {
+    cursor: pointer;
+  }
+
+  .project-img-clickable .zoom-hint {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0,255,224,0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .project-img-clickable:hover .zoom-hint { opacity: 1; }
+
+  .project-body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .project-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+
+  .project-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+  }
+
+  .project-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .project-title a:hover { color: var(--accent); text-shadow: var(--glow); }
+
+  .project-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.25rem 0.6rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .status-done { border: 1px solid #3fb950; color: #3fb950; background: rgba(63,185,80,0.08); }
+  .status-wip { border: 1px solid var(--accent2); color: var(--accent2); background: rgba(255,107,53,0.08); }
+
+  .project-desc {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .proj-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+  }
+
+  .proj-btn-primary {
+    background: rgba(0,255,224,0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+
+  .proj-btn-primary:hover { background: rgba(0,255,224,0.2); box-shadow: var(--glow); }
+
+  .proj-btn-secondary {
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .proj-btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* PYGAME SECTION */
+  .pygame-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent3);
+    padding: 2rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pygame-section::before {
+    content: 'PYGAME VISUALIZER';
+    position: absolute;
+    top: 0.5rem; right: 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent3);
+    opacity: 0.5;
+    letter-spacing: 0.15em;
+  }
+
+  .pygame-canvas {
+    width: 100%;
+    height: 200px;
+    background: #000;
+    border: 1px solid rgba(123,97,255,0.2);
+    display: block;
+    margin: 1rem 0;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    opacity: 0.3;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 2.5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 6px;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  .timeline-date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-org {
+    font-size: 0.85rem;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-desc { font-size: 0.9rem; color: var(--text-dim); }
+
+  /* CONTACT */
+  .contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+
+  .contact-item:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+    transform: translateX(4px);
+  }
+
+  .contact-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.15rem;
+  }
+
+  .contact-value {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .contact-cta {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  }
+
+  .contact-cta h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  .contact-cta p { color: var(--text-dim); margin-bottom: 1.5rem; font-size: 0.95rem; }
+
+  .email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.75rem;
+    background: linear-gradient(135deg, var(--accent), #00c9b0);
+    color: var(--bg);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: all 0.3s;
+  }
+
+  .email-link:hover {
+    background: linear-gradient(135deg, #fff, var(--accent));
+    box-shadow: 0 0 30px rgba(0,255,224,0.5);
+    transform: translateY(-2px);
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    box-shadow: var(--glow), 0 40px 80px rgba(0,0,0,0.8);
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 32px 100%, 0 calc(100% - 32px));
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+    z-index: 10;
+  }
+
+  .modal-close:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .modal-content { padding: 2.5rem; }
+
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+    text-shadow: var(--glow);
+  }
+
+  .modal-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 2rem;
+  }
+
+  .modal-img-wrap {
+    background: #000;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .modal-img-wrap img {
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+  }
+
+  .modal-img-placeholder {
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--text-dim);
+  }
+
+  .modal-img-placeholder .big-icon { font-size: 4rem; opacity: 0.3; }
+
+  .modal-img-placeholder p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    text-align: center;
+  }
+
+  .modal-section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-text { font-size: 0.95rem; color: var(--text-dim); line-height: 1.8; margin-bottom: 1rem; }
+
+  .code-block {
+    background: #000;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    color: #7ee787;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 1rem 0;
+  }
+
+  .code-comment { color: var(--text-dim); }
+  .code-keyword { color: var(--accent3); }
+  .code-string { color: var(--accent2); }
+  .code-num { color: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    background: var(--bg2);
+  }
+
+  footer p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  @keyframes waveform {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(0.2); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .blink { animation: blink 1s infinite; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .project-card.featured { grid-template-columns: 1fr; }
+    .contact-wrapper { grid-template-columns: 1fr; gap: 2rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    nav .nav-links { display: none; }
+  }
+
+  /* PYGAME BARS */
+  .bars-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 100%;
+    padding: 0.5rem;
+    position: absolute;
+    inset: 0;
+  }
+
+  .bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--accent3), var(--accent));
+    min-height: 4px;
+    transition: height 0.1s;
+    opacity: 0.8;
+  }
+
+  /* Section dividers */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.2;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">NCL<span style="color:#fff">.</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="#skills">COMPÉTENCES</a></li>
+    <li><a href="#projects">PROJETS</a></li>
+    <li><a href="#parcours">PARCOURS</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-circuit" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 400 H300 V200 H500 V400 H700 V600 H900 V400 H1100" stroke="#00ffe0" stroke-width="1"/>
+    <path d="M200 100 V300 H400 V500 H600 V300 H800 V100" stroke="#00ffe0" stroke-width="1"/>
+    <circle cx="300" cy="200" r="6" fill="#00ffe0"/>
+    <circle cx="500" cy="400" r="6" fill="#00ffe0"/>
+    <circle cx="700" cy="600" r="6" fill="#00ffe0"/>
+    <circle cx="900" cy="400" r="6" fill="#00ffe0"/>
+    <rect x="340" y="380" width="20" height="40" fill="#00ffe0" opacity="0.5"/>
+    <rect x="540" y="180" width="20" height="40" fill="#00ffe0" opacity="0.5"/>
+    <rect x="740" y="580" width="20" height="40" fill="#00ffe0" opacity="0.5"/>
+  </svg>
+
+  <div class="hero-content">
+    <div class="hero-tag">⬡ PORTFOLIO ÉLECTRONIQUE ⬡ SYSTÈMES EMBARQUÉS</div>
+    <h1 class="hero-name">NICOLA<span>U</span></h1>
+    <div class="hero-title">ÉTUDIANT EN ÉLECTRONIQUE &amp; SYSTÈMES EMBARQUÉS<span class="blink">_</span></div>
+    <p class="hero-desc">Conception de systèmes embarqués, programmation bas-niveau AVR/Arduino, et développement d'interfaces électroniques.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary">VOIR MES PROJETS</a>
+      <a href="#contact" class="btn btn-outline">ME CONTACTER</a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">COMPÉTENCES</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🔌</div>
+      <div class="skill-name">SYSTÈMES EMBARQUÉS</div>
+      <p style="font-size:0.85rem;color:var(--text-dim)">Programmation AVR, interruptions hardware, timers, gestion des registres de bas niveau.</p>
+      <div class="skill-tags">
+        <span class="tag tag-cyan">AVR/ATmega328</span>
+        <span class="tag tag-cyan">Arduino Nano</span>
+        <span class="tag tag-orange">C / C++</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📐</div>
+      <div class="skill-name">ÉLECTRONIQUE</div>
+      <p style="font-size:0.85rem;color:var(--text-dim)">Conception de circuits, lecture de schémas, prototypage sur breadboard et PCB.</p>
+      <div class="skill-tags">
+        <span class="tag tag-cyan">Multimètre</span>
+        <span class="tag tag-orange">Oscilloscope</span>
+        <span class="tag tag-purple">KiCad</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">💻</div>
+      <div class="skill-name">PROGRAMMATION</div>
+      <p style="font-size:0.85rem;color:var(--text-dim)">Développement logiciel bas-niveau et simulation Python avec visualisations.</p>
+      <div class="skill-tags">
+        <span class="tag tag-orange">C / C++</span>
+        <span class="tag tag-cyan">Python</span>
+        <span class="tag tag-purple">Pygame</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🎛️</div>
+      <div class="skill-name">INTERFACES & CAPTEURS</div>
+      <p style="font-size:0.85rem;color:var(--text-dim)">Claviers matriciels, afficheurs 7 segments, LEDs, buzzers piézoélectriques.</p>
+      <div class="skill-tags">
+        <span class="tag tag-cyan">I2C / SPI</span>
+        <span class="tag tag-orange">PWM</span>
+        <span class="tag tag-purple">UART</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">PROJETS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+
+    <!-- DIGICODE - FEATURED -->
+    <div class="project-card featured">
+      <div class="project-img project-img-clickable" onclick="openModal('digicode')">
+        <!-- Circuit schematic drawn in SVG -->
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;padding:1rem">
+          <!-- Arduino Nano body -->
+          <rect x="180" y="60" width="90" height="160" fill="#1a237e" rx="3"/>
+          <rect x="183" y="63" width="84" height="154" fill="#283593" rx="2"/>
+          <text x="225" y="100" fill="#64b5f6" font-size="8" text-anchor="middle" font-family="monospace">Arduino</text>
+          <text x="225" y="112" fill="#64b5f6" font-size="7" text-anchor="middle" font-family="monospace">Nano</text>
+          <!-- Nano pins left -->
+          <g fill="#ffd54f">
+            <rect x="168" y="72" width="12" height="4" rx="1"/>
+            <rect x="168" y="82" width="12" height="4" rx="1"/>
+            <rect x="168" y="92" width="12" height="4" rx="1"/>
+            <rect x="168" y="102" width="12" height="4" rx="1"/>
+            <rect x="168" y="112" width="12" height="4" rx="1"/>
+            <rect x="168" y="122" width="12" height="4" rx="1"/>
+            <rect x="168" y="132" width="12" height="4" rx="1"/>
+            <rect x="168" y="142" width="12" height="4" rx="1"/>
+            <rect x="168" y="152" width="12" height="4" rx="1"/>
+            <rect x="168" y="162" width="12" height="4" rx="1"/>
+            <rect x="168" y="172" width="12" height="4" rx="1"/>
+            <rect x="168" y="182" width="12" height="4" rx="1"/>
+            <rect x="168" y="192" width="12" height="4" rx="1"/>
+            <rect x="168" y="202" width="12" height="4" rx="1"/>
+          </g>
+          <!-- Nano pins right -->
+          <g fill="#ffd54f">
+            <rect x="270" y="72" width="12" height="4" rx="1"/>
+            <rect x="270" y="82" width="12" height="4" rx="1"/>
+            <rect x="270" y="92" width="12" height="4" rx="1"/>
+            <rect x="270" y="102" width="12" height="4" rx="1"/>
+            <rect x="270" y="112" width="12" height="4" rx="1"/>
+            <rect x="270" y="122" width="12" height="4" rx="1"/>
+            <rect x="270" y="132" width="12" height="4" rx="1"/>
+            <rect x="270" y="142" width="12" height="4" rx="1"/>
+            <rect x="270" y="152" width="12" height="4" rx="1"/>
+            <rect x="270" y="162" width="12" height="4" rx="1"/>
+            <rect x="270" y="172" width="12" height="4" rx="1"/>
+            <rect x="270" y="182" width="12" height="4" rx="1"/>
+            <rect x="270" y="192" width="12" height="4" rx="1"/>
+            <rect x="270" y="202" width="12" height="4" rx="1"/>
+          </g>
+          <!-- Keypad -->
+          <rect x="330" y="70" width="80" height="100" fill="#222" rx="4" stroke="#555" stroke-width="1"/>
+          <text x="370" y="65" fill="#aaa" font-size="7" text-anchor="middle" font-family="monospace">Keypad 4x3</text>
+          <g fill="#444" stroke="#00ffe0" stroke-width="0.5">
+            <rect x="337" y="78" width="16" height="12" rx="2"/><text x="345" y="88" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">1</text>
+            <rect x="357" y="78" width="16" height="12" rx="2"/><text x="365" y="88" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">2</text>
+            <rect x="377" y="78" width="16" height="12" rx="2"/><text x="385" y="88" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">3</text>
+            <rect x="337" y="95" width="16" height="12" rx="2"/><text x="345" y="105" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">4</text>
+            <rect x="357" y="95" width="16" height="12" rx="2"/><text x="365" y="105" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">5</text>
+            <rect x="377" y="95" width="16" height="12" rx="2"/><text x="385" y="105" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">6</text>
+            <rect x="337" y="112" width="16" height="12" rx="2"/><text x="345" y="122" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">7</text>
+            <rect x="357" y="112" width="16" height="12" rx="2"/><text x="365" y="122" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">8</text>
+            <rect x="377" y="112" width="16" height="12" rx="2"/><text x="385" y="122" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">9</text>
+            <rect x="337" y="129" width="16" height="12" rx="2"/><text x="345" y="139" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">*</text>
+            <rect x="357" y="129" width="16" height="12" rx="2"/><text x="365" y="139" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">0</text>
+            <rect x="377" y="129" width="16" height="12" rx="2"/><text x="385" y="139" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">#</text>
+          </g>
+          <!-- Wires keypad to nano -->
+          <line x1="330" y1="80" x2="282" y2="80" stroke="#00ffe0" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <line x1="330" y1="95" x2="282" y2="95" stroke="#00ffe0" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <line x1="330" y1="110" x2="282" y2="110" stroke="#00ffe0" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <line x1="330" y1="125" x2="282" y2="125" stroke="#00ffe0" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <line x1="338" y1="170" x2="338" y2="185" stroke="#ff6b35" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <line x1="358" y1="170" x2="358" y2="195" stroke="#ff6b35" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <line x1="378" y1="170" x2="378" y2="205" stroke="#ff6b35" stroke-width="1" opacity="0.7" stroke-dasharray="2,2"/>
+          <!-- LEDs -->
+          <circle cx="80" cy="120" r="10" fill="none" stroke="#ff4444" stroke-width="2"/>
+          <circle cx="80" cy="120" r="6" fill="#ff4444" opacity="0.6"/>
+          <text x="80" y="140" fill="#ff4444" font-size="7" text-anchor="middle" font-family="monospace">LED R</text>
+          <circle cx="110" cy="120" r="10" fill="none" stroke="#44ff44" stroke-width="2"/>
+          <circle cx="110" cy="120" r="6" fill="#44ff44" opacity="0.6"/>
+          <text x="110" y="140" fill="#44ff44" font-size="7" text-anchor="middle" font-family="monospace">LED V</text>
+          <!-- Wires LED to nano -->
+          <line x1="92" y1="120" x2="168" y2="120" stroke="#ff4444" stroke-width="1" opacity="0.7"/>
+          <line x1="122" y1="120" x2="168" y2="130" stroke="#44ff44" stroke-width="1" opacity="0.7"/>
+          <!-- 8 LEDs bottom -->
+          <g>
+            <circle cx="40" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="40" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="60" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="60" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="80" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="80" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="100" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="100" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="120" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="120" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="140" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="140" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="160" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="160" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="180" cy="230" r="7" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="180" cy="230" r="4" fill="#ffcc00" opacity="0.5"/>
+            <text x="110" y="248" fill="#aaa" font-size="6" text-anchor="middle" font-family="monospace">PORTD — 8 LEDs</text>
+          </g>
+          <!-- Labels -->
+          <text x="370" y="175" fill="#aaa" font-size="6.5" text-anchor="middle" font-family="monospace">PB0 PB1 PB2</text>
+          <text x="370" y="188" fill="#aaa" font-size="6.5" text-anchor="middle" font-family="monospace">PC2 PC3 PC4 PC5</text>
+          <!-- Click hint -->
+          <text x="250" y="270" fill="rgba(0,255,224,0.5)" font-size="7" text-anchor="middle" font-family="monospace">[ CLIQUER POUR VOIR LE SCHÉMA RÉEL ]</text>
+        </svg>
+        <div class="zoom-hint">🔍 AGRANDIR</div>
+      </div>
+      <div class="project-body">
+        <div>
+          <div class="project-header">
+            <div class="project-title">DIGICODE MATRICIEL ATmega328</div>
+            <span class="project-status status-done">✓ TERMINÉ</span>
+          </div>
+          <p class="project-desc" style="margin-top:0.75rem">
+            Système de contrôle d'accès par code secret sur Arduino Nano. Clavier 4×3, LEDs rouge/verte, timeout 4s, chenillard de confirmation, alarme visuelle. Séquence <code style="color:var(--accent);font-family:monospace">* CODE #</code> avec vérification par comparaison de chaînes.
+          </p>
+        </div>
+        <div>
+          <div class="project-tech" style="margin-bottom:1rem">
+            <span class="tag tag-cyan">ATmega328</span>
+            <span class="tag tag-orange">C / avr-gcc</span>
+            <span class="tag tag-cyan">Clavier 4×3</span>
+            <span class="tag tag-purple">GPIO / PORTD</span>
+            <span class="tag tag-orange">Timeout</span>
+          </div>
+          <div class="project-links">
+            <button class="proj-btn proj-btn-primary" onclick="openModal('digicode')">📋 DÉTAILS &amp; CODE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MELODIE AVR -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="30" r="28" stroke="#00ffe0" stroke-width="1.5"/>
+            <path d="M20 38 L20 22 L42 28 Z" fill="#00ffe0" opacity="0.6"/>
+            <line x1="10" y1="50" x2="50" y2="50" stroke="#00ffe0" stroke-width="1" opacity="0.3"/>
+          </svg>
+          <span>BUZZER PWM</span>
+        </div>
+      </div>
+      <div class="project-body">
+        <div>
+          <div class="project-header">
+            <div class="project-title">MÉLODIE AVR — SUPER MARIO</div>
+            <span class="project-status status-done">✓ TERMINÉ</span>
+          </div>
+          <p class="project-desc" style="margin-top:0.75rem">
+            Génération de mélodie par deux timers hardware. Timer2 en mode CTC pour la hauteur (PWM buzzer), Timer1 pour le rythme. 24 notes : croches, noires, blanches. Interruption ISR pour avancer automatiquement dans la partition.
+          </p>
+        </div>
+        <div>
+          <div class="project-tech" style="margin-bottom:1rem">
+            <span class="tag tag-cyan">ATmega328</span>
+            <span class="tag tag-orange">Timer CTC</span>
+            <span class="tag tag-purple">ISR / Interrupts</span>
+            <span class="tag tag-cyan">PWM Buzzer</span>
+          </div>
+          <div class="project-links">
+            <button class="proj-btn proj-btn-primary" onclick="openModal('melodie')">📋 DÉTAILS &amp; CODE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MULTIMETRE -->
+    <div class="project-card">
+      <div class="project-img project-img-clickable" onclick="openModal('multimetre')">
+        <div class="project-img-placeholder">
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+            <rect x="8" y="12" width="44" height="36" rx="4" stroke="#ff6b35" stroke-width="1.5"/>
+            <path d="M14 38 Q20 20 30 30 Q40 38 46 18" stroke="#ff6b35" stroke-width="2" fill="none"/>
+            <circle cx="30" cy="28" r="3" fill="#ff6b35" opacity="0.6"/>
+            <text x="30" y="56" fill="#ff6b35" font-size="6" text-anchor="middle" font-family="monospace">MULTIMÈTRE</text>
+          </svg>
+          <span>CLIQUER POUR VOIR</span>
+        </div>
+        <div class="zoom-hint">🔍 VOIR SCHÉMA</div>
+      </div>
+      <div class="project-body">
+        <div>
+          <div class="project-header">
+            <div class="project-title">
+              <a onclick="openModal('multimetre')" style="cursor:pointer">CONCEPTION D'UN MULTIMÈTRE</a>
+            </div>
+            <span class="project-status status-done">✓ TERMINÉ</span>
+          </div>
+          <p class="project-desc" style="margin-top:0.75rem">
+            Conception et réalisation d'un multimètre électronique capable de mesurer tension, courant et résistance. Étude du diviseur de tension, ponts de mesure et amplificateurs opérationnels.
+          </p>
+        </div>
+        <div>
+          <div class="project-tech" style="margin-bottom:1rem">
+            <span class="tag tag-orange">Ampli-Op</span>
+            <span class="tag tag-cyan">ADC</span>
+            <span class="tag tag-purple">PCB</span>
+          </div>
+          <div class="project-links">
+            <button class="proj-btn proj-btn-primary" onclick="openModal('multimetre')">🔍 VOIR SCHÉMA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGULATEUR DE TEMPERATURE -->
+    <div class="project-card">
+      <div class="project-img project-img-clickable" onclick="openModal('regulateur')">
+        <div class="project-img-placeholder">
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="35" r="12" stroke="#7b61ff" stroke-width="1.5"/>
+            <rect x="27" y="8" width="6" height="24" rx="3" stroke="#7b61ff" stroke-width="1.5"/>
+            <circle cx="30" cy="35" r="5" fill="#7b61ff" opacity="0.5"/>
+            <line x1="16" y1="35" x2="8" y2="35" stroke="#7b61ff" stroke-width="1.5"/>
+            <line x1="44" y1="35" x2="52" y2="35" stroke="#7b61ff" stroke-width="1.5"/>
+            <text x="30" y="56" fill="#7b61ff" font-size="5.5" text-anchor="middle" font-family="monospace">TEMP. REGUL.</text>
+          </svg>
+          <span>CLIQUER POUR VOIR</span>
+        </div>
+        <div class="zoom-hint">🔍 VOIR SCHÉMA</div>
+      </div>
+      <div class="project-body">
+        <div>
+          <div class="project-header">
+            <div class="project-title">
+              <a onclick="openModal('regulateur')" style="cursor:pointer">RÉGULATEUR DE TEMPÉRATURE</a>
+            </div>
+            <span class="project-status status-done">✓ TERMINÉ</span>
+          </div>
+          <p class="project-desc" style="margin-top:0.75rem">
+            Système de régulation thermique PID avec capteur NTC, comparateur et actionneur. Consigne réglable, affichage de la température mesurée et hystérésis configurable.
+          </p>
+        </div>
+        <div>
+          <div class="project-tech" style="margin-bottom:1rem">
+            <span class="tag tag-purple">Capteur NTC</span>
+            <span class="tag tag-cyan">PID</span>
+            <span class="tag tag-orange">Comparateur</span>
+          </div>
+          <div class="project-links">
+            <button class="proj-btn proj-btn-primary" onclick="openModal('regulateur')">🔍 VOIR SCHÉMA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PYTHON PYGAME -->
+    <div class="project-card" style="grid-column:1/-1">
+      <div class="project-body" style="padding:0">
+        <div class="pygame-section">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+            <div class="skill-icon" style="font-size:1.5rem">🐍</div>
+            <div>
+              <div class="project-title">SIMULATION PYTHON — VISUALISATION PYGAME</div>
+              <div style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text-dim);letter-spacing:0.1em;margin-top:0.25rem">Simulation en temps réel avec rendu graphique interactif</div>
+            </div>
+            <span class="project-status status-wip" style="margin-left:auto">⟳ ACTIF</span>
+          </div>
+
+          <!-- Pygame canvas simulation -->
+          <canvas id="pygameCanvas" class="pygame-canvas" width="900" height="200"></canvas>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
+            <div>
+              <p class="project-desc">
+                Simulation et visualisation de signaux électroniques en Python avec Pygame : oscilloscope virtuel, analyse spectrale FFT, formes d'ondes PWM. Rendu temps réel à 60fps.
+              </p>
+              <div class="project-tech" style="margin-top:0.75rem">
+                <span class="tag tag-purple">Python 3</span>
+                <span class="tag tag-cyan">Pygame</span>
+                <span class="tag tag-orange">NumPy / FFT</span>
+                <span class="tag tag-purple">Temps réel</span>
+              </div>
+            </div>
+            <div class="code-block" style="font-size:0.72rem;height:120px;overflow:hidden">
+<span class="code-comment"># Oscilloscope Pygame</span>
+<span class="code-keyword">import</span> pygame, numpy <span class="code-keyword">as</span> np
+
+pygame.init()
+screen = pygame.display.set_mode(<span class="code-num">(800, 400)</span>)
+
+<span class="code-keyword">def</span> draw_wave(surface, freq, t):
+    pts = [(<span class="code-num">i</span>, <span class="code-num">200</span> + <span class="code-num">80</span>*np.sin(<span class="code-num">2</span>*np.pi*freq*i/<span class="code-num">800</span>+t))
+           <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(<span class="code-num">800</span>)]
+    pygame.draw.lines(surface, (<span class="code-num">0</span>,<span class="code-num">255</span>,<span class="code-num">200</span>), <span class="code-keyword">False</span>, pts, <span class="code-num">2</span>)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PARCOURS -->
+<section id="parcours">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">PARCOURS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">2024 — EN COURS</div>
+      <div class="timeline-title">BTS SYSTÈMES NUMÉRIQUES — ÉLECTRONIQUE &amp; COMMUNICATIONS</div>
+      <div class="timeline-org">Institut Supérieur d'Électronique</div>
+      <div class="timeline-desc">Formation en systèmes embarqués, électronique analogique/numérique, programmation bas-niveau et conception de PCB.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">2023</div>
+      <div class="timeline-title">BACCALAURÉAT GÉNÉRAL — STI2D</div>
+      <div class="timeline-org">Lycée Technique</div>
+      <div class="timeline-desc">Spécialisation systèmes d'information et numérique. Mention Bien.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-wrapper">
+    <div class="contact-info">
+      <a href="mailto:votre.email@exemple.com" class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-label">EMAIL</div>
+          <div class="contact-value">votre.email@exemple.com</div>
+        </div>
+      </a>
+      <a href="https://github.com/" target="_blank" class="contact-item" style="text-decoration:none">
+        <div class="contact-icon">⚙️</div>
+        <div>
+          <div class="contact-label">GITHUB</div>
+          <div class="contact-value">github.com/nicolau</div>
+        </div>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" class="contact-item" style="text-decoration:none">
+        <div class="contact-icon">🔗</div>
+        <div>
+          <div class="contact-label">LINKEDIN</div>
+          <div class="contact-value">linkedin.com/in/nicolau</div>
+        </div>
+      </a>
+      <div class="contact-item" style="cursor:default">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-label">LOCALISATION</div>
+          <div class="contact-value">Rotterdam, Pays-Bas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-cta">
+      <h3>DISCUTONS D'UN PROJET</h3>
+      <p>Disponible pour des projets freelance, stages ou collaborations dans le domaine des systèmes embarqués et de l'électronique.</p>
+      <a href="mailto:votre.email@exemple.com" class="email-link">
+        ✉ M'ENVOYER UN EMAIL
+      </a>
+      <p style="margin-top:1.25rem;font-size:0.8rem;color:var(--text-dim)">
+        Réponse sous <span style="color:var(--accent)">24-48h</span>. N'hésitez pas à joindre une description de votre projet.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>NICOLAU <span>·</span> PORTFOLIO ÉLECTRONIQUE <span>·</span> <span id="year"></span></p>
+  <p style="margin-top:0.5rem;opacity:0.4">CONÇU ET DÉVELOPPÉ AVEC <span>♥</span> — AVR / C++ / HTML</p>
+</footer>
+
+<!-- ===== MODALS ===== -->
+
+<!-- MODAL DIGICODE -->
+<div class="modal-overlay" id="modal-digicode">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('digicode')">✕ FERMER</button>
+    <div class="modal-content">
+      <div class="modal-title">DIGICODE MATRICIEL</div>
+      <div class="modal-subtitle">ATmega328 · Clavier 4×3 · LEDs · C / avr-gcc</div>
+
+      <div class="modal-img-wrap">
+        <!-- Embedded schematic diagram matching the uploaded image -->
+        <svg viewBox="0 0 550 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:400px">
+          <!-- Background grid -->
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,255,224,0.05)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="550" height="320" fill="#0a0f15"/>
+          <rect width="550" height="320" fill="url(#grid)"/>
+
+          <!-- Arduino Nano -->
+          <rect x="195" y="70" width="95" height="175" fill="#1a237e" rx="3" stroke="#3f51b5" stroke-width="1"/>
+          <rect x="198" y="73" width="89" height="169" fill="#283593" rx="2"/>
+          <text x="242" y="105" fill="#90caf9" font-size="9" text-anchor="middle" font-family="monospace" font-weight="bold">Arduino</text>
+          <text x="242" y="118" fill="#90caf9" font-size="8" text-anchor="middle" font-family="monospace">Nano</text>
+          <rect x="215" y="228" width="55" height="12" fill="#1565c0" rx="1"/>
+          <text x="242" y="237" fill="#64b5f6" font-size="6" text-anchor="middle" font-family="monospace">USB</text>
+
+          <!-- Nano pins LEFT -->
+          <g fill="#ffd54f" stroke="#b8860b" stroke-width="0.3">
+            <rect x="180" y="80" width="15" height="5" rx="1"/>
+            <rect x="180" y="91" width="15" height="5" rx="1"/>
+            <rect x="180" y="102" width="15" height="5" rx="1"/>
+            <rect x="180" y="113" width="15" height="5" rx="1"/>
+            <rect x="180" y="124" width="15" height="5" rx="1"/>
+            <rect x="180" y="135" width="15" height="5" rx="1"/>
+            <rect x="180" y="146" width="15" height="5" rx="1"/>
+            <rect x="180" y="157" width="15" height="5" rx="1"/>
+            <rect x="180" y="168" width="15" height="5" rx="1"/>
+            <rect x="180" y="179" width="15" height="5" rx="1"/>
+            <rect x="180" y="190" width="15" height="5" rx="1"/>
+            <rect x="180" y="201" width="15" height="5" rx="1"/>
+            <rect x="180" y="212" width="15" height="5" rx="1"/>
+            <rect x="180" y="223" width="15" height="5" rx="1"/>
+          </g>
+          <!-- Pin labels left -->
+          <g fill="#aaa" font-size="5.5" font-family="monospace">
+            <text x="176" y="84">Tx</text><text x="176" y="95">Rx</text>
+            <text x="176" y="106">Rst</text><text x="176" y="117">Gnd</text>
+            <text x="176" y="128">5V</text><text x="176" y="139">A7</text>
+            <text x="176" y="150">A6</text><text x="176" y="161">A5</text>
+            <text x="176" y="172">A4</text><text x="176" y="183">A3</text>
+            <text x="176" y="194">A2</text><text x="176" y="205">A1</text>
+            <text x="176" y="216">A0</text><text x="176" y="227">Aref</text>
+          </g>
+
+          <!-- Nano pins RIGHT -->
+          <g fill="#ffd54f" stroke="#b8860b" stroke-width="0.3">
+            <rect x="290" y="80" width="15" height="5" rx="1"/>
+            <rect x="290" y="91" width="15" height="5" rx="1"/>
+            <rect x="290" y="102" width="15" height="5" rx="1"/>
+            <rect x="290" y="113" width="15" height="5" rx="1"/>
+            <rect x="290" y="124" width="15" height="5" rx="1"/>
+            <rect x="290" y="135" width="15" height="5" rx="1"/>
+            <rect x="290" y="146" width="15" height="5" rx="1"/>
+            <rect x="290" y="157" width="15" height="5" rx="1"/>
+            <rect x="290" y="168" width="15" height="5" rx="1"/>
+            <rect x="290" y="179" width="15" height="5" rx="1"/>
+            <rect x="290" y="190" width="15" height="5" rx="1"/>
+            <rect x="290" y="201" width="15" height="5" rx="1"/>
+            <rect x="290" y="212" width="15" height="5" rx="1"/>
+            <rect x="290" y="223" width="15" height="5" rx="1"/>
+          </g>
+          <!-- Pin labels right -->
+          <g fill="#aaa" font-size="5.5" font-family="monospace" text-anchor="start">
+            <text x="307" y="84">Vin</text><text x="307" y="95">Gnd</text>
+            <text x="307" y="106">Rst</text><text x="307" y="117">5V</text>
+            <text x="307" y="128">A7</text><text x="307" y="139">A6</text>
+            <text x="307" y="150">A5</text><text x="307" y="161">A4</text>
+            <text x="307" y="172">A3</text><text x="307" y="183">A2</text>
+            <text x="307" y="194">A1</text><text x="307" y="205">A0</text>
+            <text x="307" y="216">Arf</text><text x="307" y="227">3V3</text>
+          </g>
+
+          <!-- KEYPAD -->
+          <rect x="358" y="60" width="90" height="115" fill="#1a1a1a" rx="4" stroke="#444" stroke-width="1.5"/>
+          <text x="403" y="55" fill="#888" font-size="7.5" text-anchor="middle" font-family="monospace">Keypad 4×3</text>
+          <g stroke="#00ffe0" stroke-width="0.7">
+            <rect x="364" y="68" width="18" height="13" rx="2" fill="#222"/><text x="373" y="79" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">1</text>
+            <rect x="385" y="68" width="18" height="13" rx="2" fill="#222"/><text x="394" y="79" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">2</text>
+            <rect x="406" y="68" width="18" height="13" rx="2" fill="#222"/><text x="415" y="79" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">3</text>
+            <rect x="364" y="85" width="18" height="13" rx="2" fill="#222"/><text x="373" y="96" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">4</text>
+            <rect x="385" y="85" width="18" height="13" rx="2" fill="#222"/><text x="394" y="96" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">5</text>
+            <rect x="406" y="85" width="18" height="13" rx="2" fill="#222"/><text x="415" y="96" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">6</text>
+            <rect x="364" y="102" width="18" height="13" rx="2" fill="#222"/><text x="373" y="113" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">7</text>
+            <rect x="385" y="102" width="18" height="13" rx="2" fill="#222"/><text x="394" y="113" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">8</text>
+            <rect x="406" y="102" width="18" height="13" rx="2" fill="#222"/><text x="415" y="113" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">9</text>
+            <rect x="364" y="119" width="18" height="13" rx="2" fill="#222"/><text x="373" y="130" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">*</text>
+            <rect x="385" y="119" width="18" height="13" rx="2" fill="#222"/><text x="394" y="130" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">0</text>
+            <rect x="406" y="119" width="18" height="13" rx="2" fill="#222"/><text x="415" y="130" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">#</text>
+          </g>
+          <!-- Keypad column labels (PB) -->
+          <text x="373" y="147" fill="#ff9800" font-size="6.5" text-anchor="middle" font-family="monospace">PB0</text>
+          <text x="394" y="147" fill="#ff9800" font-size="6.5" text-anchor="middle" font-family="monospace">PB1</text>
+          <text x="415" y="147" fill="#ff9800" font-size="6.5" text-anchor="middle" font-family="monospace">PB2</text>
+          <!-- Keypad row labels (PC) -->
+          <text x="455" y="76" fill="#ff9800" font-size="6.5" font-family="monospace">PC2</text>
+          <text x="455" y="93" fill="#ff9800" font-size="6.5" font-family="monospace">PC3</text>
+          <text x="455" y="110" fill="#ff9800" font-size="6.5" font-family="monospace">PC4</text>
+          <text x="455" y="127" fill="#ff9800" font-size="6.5" font-family="monospace">PC5</text>
+
+          <!-- Wires keypad rows to nano PC pins -->
+          <polyline points="358,74 330,74 330,102 305,102" stroke="#4fc3f7" stroke-width="1" fill="none" opacity="0.8"/>
+          <polyline points="358,91 332,91 332,113 305,113" stroke="#4fc3f7" stroke-width="1" fill="none" opacity="0.8"/>
+          <polyline points="358,108 334,108 334,124 305,124" stroke="#4fc3f7" stroke-width="1" fill="none" opacity="0.8"/>
+          <polyline points="358,125 336,125 336,135 305,135" stroke="#4fc3f7" stroke-width="1" fill="none" opacity="0.8"/>
+          <!-- Wires keypad cols to nano PB pins -->
+          <polyline points="373,158 373,170 305,170" stroke="#ff9800" stroke-width="1" fill="none" opacity="0.8"/>
+          <polyline points="394,158 394,179 305,179" stroke="#ff9800" stroke-width="1" fill="none" opacity="0.8"/>
+          <polyline points="415,158 415,190 305,190" stroke="#ff9800" stroke-width="1" fill="none" opacity="0.8"/>
+
+          <!-- LEDs RIGHT side -->
+          <circle cx="125" cy="135" r="12" fill="none" stroke="#ff4444" stroke-width="2"/>
+          <circle cx="125" cy="135" r="7" fill="#ff2222" opacity="0.7"/>
+          <text x="125" y="156" fill="#ff4444" font-size="7" text-anchor="middle" font-family="monospace">LED R</text>
+          <text x="125" y="164" fill="#666" font-size="6" text-anchor="middle" font-family="monospace">PC0</text>
+
+          <circle cx="155" cy="135" r="12" fill="none" stroke="#44ff44" stroke-width="2"/>
+          <circle cx="155" cy="135" r="7" fill="#22ff22" opacity="0.7"/>
+          <text x="155" y="156" fill="#44ff44" font-size="7" text-anchor="middle" font-family="monospace">LED V</text>
+          <text x="155" y="164" fill="#666" font-size="6" text-anchor="middle" font-family="monospace">PC1</text>
+
+          <!-- LED wires to nano -->
+          <line x1="137" y1="135" x2="180" y2="135" stroke="#ff4444" stroke-width="1" opacity="0.8"/>
+          <line x1="167" y1="135" x2="180" y2="146" stroke="#44ff44" stroke-width="1" opacity="0.8"/>
+
+          <!-- 8 LEDs bottom row -->
+          <g>
+            <text x="95" y="260" fill="#888" font-size="6.5" text-anchor="middle" font-family="monospace">PD7  PD6  PD5  ......  PD1  PD0</text>
+            <circle cx="30" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="30" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="50" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="50" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="70" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="70" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="90" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="90" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="110" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="110" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="130" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="130" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="150" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="150" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <circle cx="170" cy="280" r="9" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
+            <circle cx="170" cy="280" r="5" fill="#ffcc00" opacity="0.5"/>
+            <!-- Wires from nano PD to bottom LEDs -->
+            <line x1="30" y1="271" x2="30" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="50" y1="271" x2="50" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="70" y1="271" x2="70" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="90" y1="271" x2="90" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="110" y1="271" x2="110" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="130" y1="271" x2="130" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="150" y1="271" x2="150" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+            <line x1="170" y1="271" x2="170" y2="245" stroke="#ffcc00" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+          </g>
+          <!-- Title -->
+          <text x="403" y="20" fill="rgba(0,255,224,0.8)" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">DIGICODE — SCHÉMA DE CÂBLAGE</text>
+        </svg>
+      </div>
+
+      <div class="modal-section-title">DESCRIPTION</div>
+      <p class="modal-text">Système de contrôle d'accès sécurisé basé sur un Arduino Nano (ATmega328). L'utilisateur saisit la séquence <strong style="color:var(--accent)">* + code à 4 chiffres + #</strong>. Un timeout de 4 secondes réinitialise automatiquement la saisie en cours.</p>
+
+      <div class="modal-section-title">FONCTIONNEMENT</div>
+      <p class="modal-text">Le clavier matriciel 4×3 est scanné ligne par ligne : chaque ligne est mise à 0V tour à tour, et on lit si une colonne (PB0-PB2) descend à 0V. Un anti-rebond de 20ms est appliqué. L'historique des touches est géré par un décalage de tableau de 6 caractères.</p>
+
+      <div class="modal-section-title">EXTRAIT DE CODE</div>
+      <div class="code-block"><span class="code-comment">// Vérification du code secret</span>
+<span class="code-keyword">void</span> verifierCode() {
+    <span class="code-keyword">char</span> tentative[<span class="code-num">5</span>];
+    strncpy(tentative, &historique[<span class="code-num">1</span>], <span class="code-num">4</span>);
+    tentative[<span class="code-num">4</span>] = <span class="code-string">'\0'</span>;
+
+    <span class="code-keyword">if</span>(historique[<span class="code-num">0</span>] == <span class="code-string">'*'</span> && strcmp(tentative, codeSecret) == <span class="code-num">0</span>) {
+        <span class="code-comment">// Succès → LED verte + chenillard</span>
+        <span class="code-keyword">for</span>(<span class="code-keyword">uint8_t</span> i=<span class="code-num">0</span>; i<<span class="code-num">20</span>; i++) {
+            PORTC ^= (<span class="code-num">1</span><<LED_VERTE);
+            PORTD = (i%<span class="code-num">2</span>==<span class="code-num">0</span>) ? <span class="code-num">0xFF</span> : <span class="code-num">0x00</span>;
+            _delay_ms(<span class="code-num">500</span>);
+        }
+    } <span class="code-keyword">else</span> {
+        <span class="code-comment">// Échec → LED rouge + alarme</span>
+        PORTC |= (<span class="code-num">1</span><<LED_ROUGE);
+        <span class="code-keyword">for</span>(<span class="code-keyword">uint16_t</span> i=<span class="code-num">0</span>; i<<span class="code-num">100</span>; i++) {
+            PORTD = (<span class="code-num">1</span> << (i%<span class="code-num">8</span>));
+            _delay_ms(<span class="code-num">100</span>);
+        }
+    }
+}</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MELODIE -->
+<div class="modal-overlay" id="modal-melodie">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('melodie')">✕ FERMER</button>
+    <div class="modal-content">
+      <div class="modal-title">MÉLODIE AVR — SUPER MARIO</div>
+      <div class="modal-subtitle">ATmega328 · Timer CTC · ISR · Buzzer PWM</div>
+
+      <div class="modal-img-wrap">
+        <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+          <rect width="500" height="200" fill="#0a0f15"/>
+          <!-- Waveform visualization -->
+          <text x="250" y="25" fill="rgba(0,255,224,0.7)" font-size="10" text-anchor="middle" font-family="monospace">GÉNÉRATION PWM — TIMER 2 CTC</text>
+          <!-- Square wave -->
+          <polyline points="20,100 20,60 60,60 60,140 100,140 100,60 140,60 140,140 180,140 180,60 220,60 220,100" stroke="#00ffe0" stroke-width="2" fill="none"/>
+          <text x="120" y="180" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">Signal PWM Buzzer (Toggle OC2A)</text>
+          <!-- Timer diagram -->
+          <rect x="260" y="50" width="220" height="100" fill="#111" rx="4" stroke="var(--border)" stroke-width="1"/>
+          <text x="370" y="75" fill="#7b61ff" font-size="9" text-anchor="middle" font-family="monospace">TIMER 1 — Durée Note</text>
+          <polyline points="275,130 275,90 370,90 370,130 465,130 465,90" stroke="#ff6b35" stroke-width="2" fill="none"/>
+          <line x1="275" y1="90" x2="275" y2="55" stroke="#ff6b35" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+          <line x1="370" y1="90" x2="370" y2="55" stroke="#ff6b35" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+          <text x="322" y="85" fill="#ff6b35" font-size="7" text-anchor="middle" font-family="monospace">OCR1A = durée</text>
+          <text x="370" y="158" fill="#7b61ff" font-size="8" text-anchor="middle" font-family="monospace">ISR(TIMER1_COMPA_vect) → note++</text>
+        </svg>
+      </div>
+
+      <div class="modal-section-title">ARCHITECTURE DOUBLE TIMER</div>
+      <p class="modal-text"><strong style="color:var(--accent)">Timer 2</strong> (CTC, prescaler 256) génère la fréquence audio via toggle sur OC2A (PB3). La valeur de OCR2A détermine la note jouée. <strong style="color:var(--accent2)">Timer 1</strong> gère la durée de chaque note : quand il atteint OCR1A, l'ISR passe à la note suivante.</p>
+
+      <div class="modal-section-title">EXTRAIT DE CODE</div>
+      <div class="code-block"><span class="code-comment">// Interruption de fin de note</span>
+ISR(TIMER1_COMPA_vect) {
+    <span class="code-keyword">static uint8_t</span> n = <span class="code-num">0</span>;
+    OCR2A = freqNote[melodie[n]];    <span class="code-comment">// hauteur</span>
+    OCR1A = durees[n];               <span class="code-comment">// durée</span>
+    <span class="code-keyword">if</span>(++n >= nbNotes) n = <span class="code-num">0</span>;         <span class="code-comment">// boucle</span>
+}
+
+<span class="code-comment">// Notes : Do Ré Mi Fa Sol La Si</span>
+<span class="code-keyword">const uint8_t</span> freqNote[<span class="code-num">12</span>] = {
+    <span class="code-num">118</span>, <span class="code-num">112</span>, <span class="code-num">105</span>, <span class="code-num">99</span>, <span class="code-num">94</span>, <span class="code-num">89</span>,
+    <span class="code-num">84</span>,  <span class="code-num">79</span>,  <span class="code-num">74</span>,  <span class="code-num">70</span>, <span class="code-num">66</span>, <span class="code-num">62</span>
+};</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MULTIMETRE -->
+<div class="modal-overlay" id="modal-multimetre">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('multimetre')">✕ FERMER</button>
+    <div class="modal-content">
+      <div class="modal-title">CONCEPTION D'UN MULTIMÈTRE</div>
+      <div class="modal-subtitle">Électronique Analogique · Ampli-Op · ADC · PCB</div>
+
+      <div class="modal-img-wrap">
+        <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+          <rect width="520" height="260" fill="#0a0f15"/>
+          <!-- Multimeter block diagram -->
+          <text x="260" y="22" fill="rgba(255,107,53,0.9)" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">SCHÉMA BLOC — MULTIMÈTRE</text>
+
+          <!-- Input -->
+          <rect x="20" y="100" width="70" height="50" fill="#111" stroke="#ff6b35" stroke-width="1.5" rx="3"/>
+          <text x="55" y="122" fill="#ff6b35" font-size="8" text-anchor="middle" font-family="monospace">ENTRÉE</text>
+          <text x="55" y="135" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">V/A/Ω</text>
+          <line x1="90" y1="125" x2="120" y2="125" stroke="#ff6b35" stroke-width="1.5"/>
+          <polygon points="118,121 126,125 118,129" fill="#ff6b35"/>
+
+          <!-- Protection -->
+          <rect x="120" y="100" width="70" height="50" fill="#111" stroke="#ff9800" stroke-width="1.5" rx="3"/>
+          <text x="155" y="122" fill="#ff9800" font-size="8" text-anchor="middle" font-family="monospace">PROTECT.</text>
+          <text x="155" y="135" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Fusibles</text>
+          <line x1="190" y1="125" x2="220" y2="125" stroke="#ff9800" stroke-width="1.5"/>
+          <polygon points="218,121 226,125 218,129" fill="#ff9800"/>
+
+          <!-- Amplifier -->
+          <rect x="220" y="90" width="80" height="70" fill="#111" stroke="#00ffe0" stroke-width="1.5" rx="3"/>
+          <text x="260" y="118" fill="#00ffe0" font-size="8" text-anchor="middle" font-family="monospace">AMPLI-OP</text>
+          <text x="260" y="130" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Mise à l'échelle</text>
+          <text x="260" y="142" fill="#666" font-size="6" text-anchor="middle" font-family="monospace">Gain ajustable</text>
+          <line x1="300" y1="125" x2="330" y2="125" stroke="#00ffe0" stroke-width="1.5"/>
+          <polygon points="328,121 336,125 328,129" fill="#00ffe0"/>
+
+          <!-- ADC -->
+          <rect x="330" y="100" width="70" height="50" fill="#111" stroke="#7b61ff" stroke-width="1.5" rx="3"/>
+          <text x="365" y="122" fill="#7b61ff" font-size="8" text-anchor="middle" font-family="monospace">ADC</text>
+          <text x="365" y="135" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">10 bits</text>
+          <line x1="400" y1="125" x2="430" y2="125" stroke="#7b61ff" stroke-width="1.5"/>
+          <polygon points="428,121 436,125 428,129" fill="#7b61ff"/>
+
+          <!-- Display -->
+          <rect x="430" y="95" width="75" height="60" fill="#0d1f0d" stroke="#3fb950" stroke-width="1.5" rx="3"/>
+          <text x="467" y="120" fill="#3fb950" font-size="9" text-anchor="middle" font-family="monospace">0.00</text>
+          <text x="467" y="133" fill="#3fb950" font-size="7" text-anchor="middle" font-family="monospace">V / A / Ω</text>
+          <text x="467" y="148" fill="#555" font-size="6" text-anchor="middle" font-family="monospace">AFFICHAGE</text>
+
+          <!-- Divider bridge for R measure -->
+          <text x="155" y="195" fill="#888" font-size="8" text-anchor="middle" font-family="monospace">PONT DIVISEUR (mesure Ω)</text>
+          <line x1="115" y1="200" x2="195" y2="200" stroke="#555" stroke-width="1"/>
+          <rect x="115" y="195" width="35" height="10" fill="#333" stroke="#ff6b35" stroke-width="1" rx="1"/>
+          <text x="132" y="203" fill="#ff6b35" font-size="6" text-anchor="middle" font-family="monospace">Rréf</text>
+          <rect x="155" y="195" width="35" height="10" fill="#333" stroke="#00ffe0" stroke-width="1" rx="1"/>
+          <text x="172" y="203" fill="#00ffe0" font-size="6" text-anchor="middle" font-family="monospace">Rx</text>
+          <line x1="155" y1="200" x2="155" y2="215" stroke="#7b61ff" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="155" y="228" fill="#7b61ff" font-size="6.5" text-anchor="middle" font-family="monospace">Vout → ADC</text>
+        </svg>
+      </div>
+
+      <div class="modal-section-title">DESCRIPTION DU PROJET</div>
+      <p class="modal-text">Conception d'un multimètre numérique capable de mesurer : <strong style="color:var(--accent)">tension continue</strong> (0-30V), <strong style="color:var(--accent2)">courant</strong> (0-2A via shunt) et <strong style="color:var(--accent3)">résistance</strong> (pont diviseur + Rréférence). Un amplificateur opérationnel assure la mise à l'échelle avant l'entrée ADC.</p>
+      <p class="modal-text">Les protections d'entrée (fusibles, diodes transil) protègent le circuit contre les surcharges. Le gain de l'ampli-op est sélectionnable selon la gamme de mesure choisie.</p>
+
+      <div class="modal-section-title">COMPOSANTS PRINCIPAUX</div>
+      <div class="project-tech" style="margin-bottom:1rem">
+        <span class="tag tag-orange">LM358 (Ampli-Op)</span>
+        <span class="tag tag-cyan">ATmega328 ADC</span>
+        <span class="tag tag-purple">LCD I2C</span>
+        <span class="tag tag-orange">Pont diviseur</span>
+        <span class="tag tag-cyan">Shunt 0.1Ω</span>
+        <span class="tag tag-purple">PCB 2 couches</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REGULATEUR -->
+<div class="modal-overlay" id="modal-regulateur">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('regulateur')">✕ FERMER</button>
+    <div class="modal-content">
+      <div class="modal-title">RÉGULATEUR DE TEMPÉRATURE</div>
+      <div class="modal-subtitle">Capteur NTC · PID · Comparateur · Actionneur</div>
+
+      <div class="modal-img-wrap">
+        <svg viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+          <rect width="520" height="240" fill="#0a0f15"/>
+          <text x="260" y="22" fill="rgba(123,97,255,0.9)" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">SCHÉMA BLOC — RÉGULATEUR THERMIQUE</text>
+
+          <!-- PID loop diagram -->
+          <!-- Setpoint -->
+          <rect x="20" y="90" width="70" height="50" fill="#111" stroke="#7b61ff" stroke-width="1.5" rx="3"/>
+          <text x="55" y="112" fill="#7b61ff" font-size="8" text-anchor="middle" font-family="monospace">CONSIGNE</text>
+          <text x="55" y="124" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">T° cible</text>
+          <line x1="90" y1="115" x2="115" y2="115" stroke="#7b61ff" stroke-width="1.5"/>
+          <polygon points="113,111 121,115 113,119" fill="#7b61ff"/>
+
+          <!-- Comparator -->
+          <polygon points="115,95 155,115 115,135" fill="#111" stroke="#00ffe0" stroke-width="1.5"/>
+          <text x="130" y="112" fill="#00ffe0" font-size="7" text-anchor="middle" font-family="monospace">Σ</text>
+          <line x1="155" y1="115" x2="185" y2="115" stroke="#00ffe0" stroke-width="1.5"/>
+          <polygon points="183,111 191,115 183,119" fill="#00ffe0"/>
+
+          <!-- PID -->
+          <rect x="185" y="90" width="80" height="50" fill="#111" stroke="#ff6b35" stroke-width="1.5" rx="3"/>
+          <text x="225" y="112" fill="#ff6b35" font-size="9" text-anchor="middle" font-family="monospace" font-weight="bold">PID</text>
+          <text x="225" y="126" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Kp Ki Kd</text>
+          <line x1="265" y1="115" x2="295" y2="115" stroke="#ff6b35" stroke-width="1.5"/>
+          <polygon points="293,111 301,115 293,119" fill="#ff6b35"/>
+
+          <!-- Actuator -->
+          <rect x="295" y="90" width="70" height="50" fill="#111" stroke="#ff9800" stroke-width="1.5" rx="3"/>
+          <text x="330" y="112" fill="#ff9800" font-size="8" text-anchor="middle" font-family="monospace">ACTUAT.</text>
+          <text x="330" y="124" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Résistance</text>
+          <line x1="365" y1="115" x2="395" y2="115" stroke="#ff9800" stroke-width="1.5"/>
+          <polygon points="393,111 401,115 393,119" fill="#ff9800"/>
+
+          <!-- Process (plant) -->
+          <rect x="395" y="80" width="80" height="70" fill="#111" stroke="#3fb950" stroke-width="1.5" rx="3"/>
+          <text x="435" y="108" fill="#3fb950" font-size="8" text-anchor="middle" font-family="monospace">PROCESS</text>
+          <text x="435" y="120" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Température</text>
+          <text x="435" y="133" fill="#3fb950" font-size="10" text-anchor="middle" font-family="monospace">🌡️</text>
+
+          <!-- Feedback arrow -->
+          <path d="M435,150 L435,175 L225,175 L225,140" stroke="#7b61ff" stroke-width="1.5" fill="none" stroke-dasharray="5,3"/>
+          <polygon points="221,142 225,134 229,142" fill="#7b61ff"/>
+          <text x="330" y="192" fill="#7b61ff" font-size="7.5" text-anchor="middle" font-family="monospace">← RETOUR CAPTEUR NTC</text>
+
+          <!-- NTC sensor -->
+          <circle cx="435" cy="210" r="12" fill="#111" stroke="#7b61ff" stroke-width="1.5"/>
+          <text x="435" y="214" fill="#7b61ff" font-size="7" text-anchor="middle" font-family="monospace">NTC</text>
+          <line x1="435" y1="150" x2="435" y2="198" stroke="#7b61ff" stroke-width="1" stroke-dasharray="3,2"/>
+        </svg>
+      </div>
+
+      <div class="modal-section-title">DESCRIPTION DU PROJET</div>
+      <p class="modal-text">Système de régulation thermique en boucle fermée. Un capteur <strong style="color:var(--accent3)">NTC</strong> mesure la température ambiante. L'erreur entre la consigne et la mesure est traitée par un régulateur <strong style="color:var(--accent2)">PID</strong> qui commande un actionneur (résistance chauffante via MOSFET PWM).</p>
+      <p class="modal-text">L'hystérésis configurable évite les oscillations du relais autour du point de consigne. La température mesurée et la consigne sont affichées sur un écran LCD.</p>
+
+      <div class="modal-section-title">COMPOSANTS CLÉS</div>
+      <div class="project-tech" style="margin-bottom:1rem">
+        <span class="tag tag-purple">NTC 10kΩ</span>
+        <span class="tag tag-cyan">Pont de Wheatstone</span>
+        <span class="tag tag-orange">MOSFET IRF540</span>
+        <span class="tag tag-purple">LCD 16×2</span>
+        <span class="tag tag-cyan">PID Numérique</span>
+        <span class="tag tag-orange">Hystérésis</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Modal functions
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
+// Close on ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => {
+      m.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  }
+});
+
+// Pygame Canvas oscilloscope
+const canvas = document.getElementById('pygameCanvas');
+const ctx = canvas.getContext('2d');
+let t = 0;
+let animFrame;
+
+function drawPygame() {
+  const W = canvas.width, H = canvas.height;
+  
+  // Clear
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+  
+  // Grid
+  ctx.strokeStyle = 'rgba(0,255,224,0.06)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Labels
+  ctx.fillStyle = 'rgba(0,255,224,0.4)';
+  ctx.font = '10px Share Tech Mono, monospace';
+  ctx.fillText('OSCILLOSCOPE VIRTUEL', 10, 18);
+  ctx.fillText('CH1: Signal Buzzer (PWM)', 10, H - 10);
+  ctx.fillText('CH2: Timer ISR', 300, H - 10);
+  ctx.fillStyle = 'rgba(255,107,53,0.4)';
+  ctx.fillText(`t = ${(t * 0.016).toFixed(2)}s`, W - 90, 18);
+
+  // CH1: sine-like PWM signal (cyan)
+  ctx.beginPath();
+  ctx.strokeStyle = '#00ffe0';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#00ffe0';
+  ctx.shadowBlur = 6;
+  for (let x = 0; x < W; x++) {
+    const freq = 2 + Math.sin(t * 0.01) * 1.5;
+    const y = H / 2 - 60 * Math.sin(2 * Math.PI * freq * x / W + t * 0.08);
+    x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // CH2: square wave (orange)
+  ctx.beginPath();
+  ctx.strokeStyle = '#ff6b35';
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = '#ff6b35';
+  ctx.shadowBlur = 4;
+  for (let x = 0; x < W; x++) {
+    const period = 80;
+    const phase = (x + t * 3) % period;
+    const y = 3 * H / 4 + (phase < period / 2 ? -30 : 30);
+    if (x === 0 || Math.abs(((x - 1 + t * 3) % period) - (phase)) > 20) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  // Trigger indicator
+  ctx.fillStyle = '#00ffe0';
+  ctx.font = '9px Share Tech Mono, monospace';
+  ctx.fillText('▶ TRIG', W - 55, H / 2 + 4);
+
+  t++;
+  animFrame = requestAnimationFrame(drawPygame);
+}
+
+// Start when visible
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      drawPygame();
+    } else {
+      cancelAnimationFrame(animFrame);
+    }
+  });
+});
+observer.observe(canvas);
+</script>
+</body>
+</html>
